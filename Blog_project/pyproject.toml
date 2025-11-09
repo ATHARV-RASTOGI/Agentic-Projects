@@ -10,6 +10,7 @@ dependencies = [
     "langchain-community>=0.4.1",
     "langchain-core>=1.0.3",
     "langchain-groq>=1.0.0",
+    "langchain-tavily>=0.2.13",
     "langgraph>=1.0.2",
     "langgraph-cli[inmem]>=0.4.7",
     "uvicorn>=0.38.0",

@@ -7,3 +7,4 @@ langchain_groq
 uvicorn
 watchdog
 langgraph-cli[inmem]
+langchain-tavily
