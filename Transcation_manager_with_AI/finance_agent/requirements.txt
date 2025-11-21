@@ -1,11 +1,9 @@
-langchain
 langgraph
+langchain
 streamlit
 langchain_community
 langchain_core
 langchain-groq
-langchain_openai
 langchain_ollama
-faiss_cpu
-tavily-python
-langchain_tavily
+alembic
+sqlalchemy

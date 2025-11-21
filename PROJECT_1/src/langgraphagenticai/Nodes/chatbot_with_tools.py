@@ -12,7 +12,7 @@ class ChatbotTools:
 
         tools_response= f"tool integration for:{user_input}"
 
-        return {"mesaages":[llm_response,tools_response]}
+        return {"messages":[llm_response,tools_response]}
     
     def create_chatbot(self,tools):
         """
