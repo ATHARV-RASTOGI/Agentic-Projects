@@ -41,9 +41,6 @@ class TransactionState(TypedDict):
         description:Optional[str]
         extracted_data:Optional[str]
 
-        isValid:bool
-        validation_errors:list[str]
-
         transaction_id:Optional[str]
         operation_status:Optional[str]
 
