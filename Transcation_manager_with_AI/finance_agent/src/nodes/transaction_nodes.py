@@ -211,5 +211,122 @@ def undo_last_transaction_node(state:TransactionState)-> Dict[str,Any]:
         return {"response_message": f"❌ Error: {str(e)}"}
     
 def edit_transaction_node(state:TransactionState)->Dict[str,Any]:
+    logger.info("==EDIT TRANSACTION==")
 
+    user_input=state.get("user_input")
+    parts= user_input.split()
+
+    if len(parts)<4 :
+        return{
+            "response_manager":"""Invalid Format
+            
+            Usage:
+            -  edit TXN-12345 amount 5000
+            - edit TXN-12345 category Rent
+            - edit TXN-12345 description "New text"
+              
+            """
+        }
     
+    transaction_id=parts[1]
+    field= parts[2].lower()
+    value="".join(parts[3:].strip('"'))
+
+    try:
+        if field =="amount":
+            success= repo.edit_tranasction(transaction_id, amount=float(value))
+        elif field == "category":
+            success=repo.edit_tranasction(transaction_id, category=value)
+        elif field=="description":
+            success=repo.edit_transaction(transaction_id,description=value)
+        else:
+            return{"response_message":f"Unknown Field{field}"}
+        
+        if success:
+            for txn in memory.recent_transactions:
+                if txn["transaction_id"]== transaction_id:
+                    if field == "amount":
+                        txn["amount"]= float(value)
+                    elif field == "category":
+                        txn["category"]=value
+                    elif field == "description":
+                        txn["description"]= value
+
+            return{
+                "operation_statue":"success",
+                "response_message": f"✏️ **Transaction Updated**\n\nID: {transaction_id}\nUpdated: {field} = {value} "
+            }
+        else:
+            return{"response_message": f"❌ Transaction {transaction_id} not found"}
+    except Exception as e:
+        return{"response_message": f"❌ Error: {str(e)}"}
+
+
+def create_recurring_transaction_node(state:TransactionState)-> Dict[str,Any]:
+
+    logger.info("=CREATE RECURRING=")
+
+    user_input=state.get("user_input")
+    parts=user_input.lower().split()
+
+    if len(parts)<6 :
+        return{
+            "response_message":"""Invalid Format
+
+            Usage :Create recurring [type] [category] [amount] [frequency]
+            Example : create recurring expence Rent 12000 monthly
+            """
+        }
+    
+    try:
+        txn_type=parts[2]
+        category=parts[3].capitalize
+        amount= float(parts[4])
+        frequency=parts[5]
+
+        next_date =datetime.now()
+        description= f" Recurring {category} ({frequency})"
+
+        result= repo.create_recurring_transaction(
+            type=txn_type,
+            category=category,
+            amount=amount,
+            frequency=frequency,
+            description=description,
+            next_date=next_date
+        )
+
+        return{
+             "operation_status": "success",
+            "response_message": f"""🔄 **Recurring Transaction Created**
+
+            **ID:** {result['recurring_id']}
+            **Type:** {txn_type.capitalize()}
+            **Category:** {category}
+            **Amount:** ₹{amount:,.2f}
+            **Frequency:** {frequency.capitalize()}
+            **Next Due:** {result['next_date']}
+
+            Will auto-process on due date.
+            """
+        }
+    except Exception as e:
+        return{"response_message":f"Error {str(e)}"}
+
+def show_recent_transaction_node(state:TransactionState)-> Dict[str,Any]:
+
+    recent= memory.get_recent_trasactions(count=10)
+
+    if not recent:
+        return{"response_manager":"No recent transaction in memory"}
+
+    lines=["Return Transations (Memory)"]
+
+    for txn in reversed(recent):
+        lines.append(
+            f"**{txn['transaction_id']}** | {txn['date'][:10]} | "
+            f"{txn['type'].upper()} | {txn['category']} | ₹{txn['amount']:,.2f}"
+        )
+    
+    return {"response_message": "\n".join(lines)}
+
