@@ -5,5 +5,11 @@ langchain_community
 langchain_core
 langchain-groq
 langchain_ollama
-alembic
-sqlalchemy
+
+# Google Sheets API
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+
+python-dateutil
