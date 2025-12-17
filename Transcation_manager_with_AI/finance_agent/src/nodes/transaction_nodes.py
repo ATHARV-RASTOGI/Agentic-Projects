@@ -13,7 +13,7 @@ logger=logging.getLogger(__name__)
 
 repo=SheetRepository(
     spreadsheet_id=os.getenv("GOOGLE_SPREADSHEET_ID"),
-    credentials_path=os.getenv("GOOGLE_CREDENTIALS_PATH", "service_account_credentials.json")
+    credentials_path=os.getenv("GOOGLE_CREDENTIALS_PATH")
 )
 
 memory=MemoryManager(max_transaction=10)
@@ -260,7 +260,6 @@ def edit_transaction_node(state:TransactionState)->Dict[str,Any]:
             return{"response_message": f"❌ Transaction {transaction_id} not found"}
     except Exception as e:
         return{"response_message": f"❌ Error: {str(e)}"}
-
 
 def create_recurring_transaction_node(state:TransactionState)-> Dict[str,Any]:
 

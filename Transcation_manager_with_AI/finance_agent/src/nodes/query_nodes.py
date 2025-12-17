@@ -28,7 +28,7 @@ def handle_query_node(state : TransactionState)-> Dict[str,Any]:
         elif query_type == "filter":
             results = get_filtered(state)
         elif query_type == "category_report":
-            results = get_categorty_report()
+            results = get_category_report()
         else:
             results={"error":"Unknown query type"}
 

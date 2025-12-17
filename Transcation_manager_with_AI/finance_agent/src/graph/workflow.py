@@ -5,14 +5,15 @@ from typing import Literal
 from datetime import datetime
 from src.nodes.classify_input import classify_input_node
 from src.nodes.transaction_nodes import (
-    edit_transaction,
+    validate_transaction,
     create_pending_transaction,
-    approve_transcation,
-    reject_transaction,
+    approve_transaction_node,
+    reject_transasction_node,
     show_pending_transaction,
-    undo_transaction,
+    undo_last_transaction_node,
     recurring_transaction,
-    recent_transaction
+    show_recent_transaction_node,
+    edit_transaction_node
 )
 from src.nodes.query_nodes import handle_query_node
 
@@ -89,7 +90,6 @@ def validation_router(state:TransactionState) -> Literal["create_pending","end"]
   
 def build_workflow()->StateGraph:
 
-
     """
     Build complete workflow
     
@@ -102,16 +102,16 @@ def build_workflow()->StateGraph:
     workflow=StateGraph(TransactionState)
     workflow.add_node("start",start_node)
     workflow.add_node("calssify",classify_input_node)
-    workflow.add_node("validate",edit_transaction)
+    workflow.add_node("validate",validate_transaction)
     workflow.add_node("create_pending",create_pending_transaction)
     workflow.add_node("handle_query",handle_query_node)
-    workflow.add_node("approve",approve_transcation)
-    workflow.add_node("reject",reject_transaction)
+    workflow.add_node("approve",approve_transaction_node)
+    workflow.add_node("reject",reject_transasction_node)
     workflow.add_node("show_pending",show_pending_transaction)
-    workflow.add_node("undo",undo_transaction)
-    workflow.add_node("edit",edit_transaction)
+    workflow.add_node("undo",undo_last_transaction_node)
+    workflow.add_node("edit",edit_transaction_node)
     workflow.add_node("create_recurring",recurring_transaction)
-    workflow.add_node("show_recent",recent_transaction)
+    workflow.add_node("show_recent",show_recent_transaction_node)
 
     workflow.set_entry_point("start")
 
